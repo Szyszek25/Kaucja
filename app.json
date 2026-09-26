@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Kaucja Wallet",
+    "slug": "kaucja-wallet",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "kaucja",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Pozwól Kaucja Wallet używać aparatu do skanowania kodów QR kaucjomatów.",
+          "barcodeScannerEnabled": true
+        }
+      ]
+    ],
+    "android": {
+      "package": "pl.kaucjawallet.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F8F2"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "pl.kaucjawallet.app",
+      "supportsTablet": false
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
