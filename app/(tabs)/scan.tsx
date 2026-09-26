@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#000' },
   overlay: { flex: 1, padding: 22, justifyContent: 'space-between', backgroundColor: 'rgba(0,0,0,0.28)' },
   kicker: { color: colors.lime, textTransform: 'uppercase', fontWeight: '900', letterSpacing: 1.2, fontSize: 12, marginTop: 10 },
-  title: { color: '#fff', fontSize: 31, lineHeight: 35, fontWeight: '900', letterSpacing: -1, marginTop: 7 },
+  title: { color: '#fff', fontSize: 26, lineHeight: 31, fontWeight: '900', letterSpacing: -1, marginTop: 7 },
   subtitle: { color: 'rgba(255,255,255,0.78)', lineHeight: 20, marginTop: 9, maxWidth: 350 },
   frame: { alignSelf: 'center', width: 260, height: 260, position: 'relative' },
   corner: { position: 'absolute', width: 55, height: 55, borderColor: colors.lime },
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   demoButton: { backgroundColor: 'rgba(255,255,255,0.96)', borderRadius: 18, padding: 17, alignItems: 'center' },
   demoButtonText: { fontWeight: '900', color: colors.black },
   permission: { flex: 1, backgroundColor: colors.bg, justifyContent: 'center', padding: 24, gap: 16 },
-  permissionTitle: { fontSize: 30, fontWeight: '900', color: colors.text },
+  permissionTitle: { fontSize: 26, lineHeight: 31, fontWeight: '900', color: colors.text },
   permissionText: { fontSize: 15, lineHeight: 22, color: colors.muted, marginBottom: 8 },
   demoLink: { textAlign: 'center', color: colors.primary, fontWeight: '800', padding: 10 }
 });
