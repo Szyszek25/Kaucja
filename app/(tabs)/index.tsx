@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, PrimaryButton, ScreenHeader } from '@/components/UI';
+import { BrandHeader, PrimaryButton } from '@/components/UI';
 import { useWallet } from '@/context/WalletContext';
 import { colors } from '@/theme/colors';
 
@@ -12,47 +12,61 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <ScreenHeader eyebrow="Kaucja Wallet" title="Oddajesz. Dostajesz. Bez papierka." />
+        <BrandHeader />
 
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Do wypłaty</Text>
-          <Text style={styles.balance}>{balance.toFixed(2).replace('.', ',')} zł</Text>
-          <Text style={styles.balanceHint}>Demo: środki pojawiają się po potwierdzeniu sesji przez operatora RVM.</Text>
-          <PrimaryButton label="Zeskanuj kaucjomat" onPress={() => router.push('/scan')} />
+        <View style={styles.hero}>
+          <Text style={styles.heroKicker}>Twoja kaucja</Text>
+          <Text style={styles.heroAmount}>{balance.toFixed(2).replace('.', ',')} zł</Text>
+          <Text style={styles.heroText}>Zeskanuj kod przy automacie, oddaj opakowania i odbierz zwrot cyfrowo.</Text>
+          <PrimaryButton label="Skanuj kaucjomat" onPress={() => router.push('/scan')} />
         </View>
 
-        <View style={styles.statsRow}>
-          <Card style={{ flex: 1 }}>
-            <Text style={styles.statLabel}>Łącznie odzyskane</Text>
-            <Text style={styles.statValue}>{lifetime.toFixed(2).replace('.', ',')} zł</Text>
-          </Card>
-          <Card style={{ flex: 1 }}>
-            <Text style={styles.statLabel}>Zwroty</Text>
-            <Text style={styles.statValue}>{refunds.length}</Text>
-          </Card>
+        <View style={styles.summaryRow}>
+          <View>
+            <Text style={styles.summaryLabel}>Odzyskane łącznie</Text>
+            <Text style={styles.summaryValue}>{lifetime.toFixed(2).replace('.', ',')} zł</Text>
+          </View>
+          <View>
+            <Text style={styles.summaryLabel}>Zwroty</Text>
+            <Text style={styles.summaryValue}>{refunds.length}</Text>
+          </View>
         </View>
 
-        <View style={styles.sectionHead}><Text style={styles.sectionTitle}>Jak to działa</Text><Text style={styles.sectionBadge}>3 kroki</Text></View>
-        <Card>
-          {[
-            ['1', 'Skanujesz QR', 'Łączysz aplikację z konkretną sesją kaucjomatu.'],
-            ['2', 'Wrzucasz opakowania', 'Maszyna je rozpoznaje i rozlicza w systemie operatora.'],
-            ['3', 'Dostajesz zwrot', 'Po potwierdzeniu sesji pojawia się cyfrowy zwrot — bez bonu.']
-          ].map(([n, t, d], i) => (
-            <View key={n} style={[styles.step, i < 2 && styles.stepBorder]}>
-              <View style={styles.stepNo}><Text style={styles.stepNoText}>{n}</Text></View>
-              <View style={{ flex: 1 }}><Text style={styles.stepTitle}>{t}</Text><Text style={styles.stepDesc}>{d}</Text></View>
-            </View>
-          ))}
-        </Card>
+        <View style={styles.divider} />
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Jak to działa</Text>
+        </View>
+        {[
+          ['01', 'Skanujesz QR przy automacie'],
+          ['02', 'Oddajesz butelki i puszki'],
+          ['03', 'Zwrot trafia cyfrowo do aplikacji']
+        ].map(([n, label]) => (
+          <View key={n} style={styles.stepRow}>
+            <Text style={styles.stepNo}>{n}</Text>
+            <Text style={styles.stepText}>{label}</Text>
+          </View>
+        ))}
+
+        <Pressable onPress={() => router.push('/points')} style={styles.pointsLink}>
+          <View>
+            <Text style={styles.pointsTitle}>Punkty w Warszawie</Text>
+            <Text style={styles.pointsMeta}>Biedronka, Lidl, Carrefour i inne</Text>
+          </View>
+          <Text style={styles.arrow}>›</Text>
+        </Pressable>
 
         {latest ? (
-          <>
+          <View>
             <Text style={styles.sectionTitle}>Ostatni zwrot</Text>
-            <Card>
-              <View style={styles.row}><View><Text style={styles.itemTitle}>{latest.pointName}</Text><Text style={styles.itemMeta}>{new Date(latest.createdAt).toLocaleDateString('pl-PL')} · {latest.operator}</Text></View><Text style={styles.amount}>+{latest.amount.toFixed(2).replace('.', ',')} zł</Text></View>
-            </Card>
-          </>
+            <View style={styles.refundRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.itemTitle}>{latest.pointName}</Text>
+                <Text style={styles.itemMeta}>{new Date(latest.createdAt).toLocaleDateString('pl-PL')} · {latest.operator}</Text>
+              </View>
+              <Text style={styles.amount}>+{latest.amount.toFixed(2).replace('.', ',')} zł</Text>
+            </View>
+          </View>
         ) : null}
       </ScrollView>
     </SafeAreaView>
@@ -61,24 +75,25 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: 20, paddingBottom: 32, gap: 18 },
-  balanceCard: { backgroundColor: colors.lime, borderRadius: 30, padding: 22, gap: 12 },
-  balanceLabel: { fontSize: 13, fontWeight: '800', color: colors.primaryDark, textTransform: 'uppercase', letterSpacing: 0.8 },
-  balance: { fontSize: 48, lineHeight: 52, fontWeight: '900', color: colors.black, letterSpacing: -2 },
-  balanceHint: { fontSize: 13, lineHeight: 19, color: '#355240', marginBottom: 2 },
-  statsRow: { flexDirection: 'row', gap: 12 },
-  statLabel: { fontSize: 12, color: colors.muted, fontWeight: '700' },
-  statValue: { marginTop: 8, fontSize: 24, fontWeight: '900', color: colors.text },
-  sectionHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 3 },
-  sectionTitle: { fontSize: 20, fontWeight: '900', color: colors.text, letterSpacing: -0.5 },
-  sectionBadge: { fontSize: 12, fontWeight: '800', color: colors.primary, backgroundColor: colors.mint, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999 },
-  step: { flexDirection: 'row', gap: 13, paddingVertical: 14 },
-  stepBorder: { borderBottomWidth: 1, borderBottomColor: colors.border },
-  stepNo: { width: 34, height: 34, borderRadius: 17, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center' },
-  stepNoText: { color: 'white', fontWeight: '900' },
-  stepTitle: { fontSize: 15, fontWeight: '900', color: colors.text, marginBottom: 3 },
-  stepDesc: { fontSize: 13, lineHeight: 18, color: colors.muted },
-  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  content: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 34, gap: 24 },
+  hero: { paddingTop: 10 },
+  heroKicker: { fontSize: 13, fontWeight: '800', color: colors.primary, marginBottom: 3 },
+  heroAmount: { fontSize: 44, lineHeight: 50, fontWeight: '900', color: colors.text, letterSpacing: -1.8 },
+  heroText: { color: colors.muted, fontSize: 15, lineHeight: 21, marginTop: 8, marginBottom: 18, maxWidth: 350 },
+  summaryRow: { flexDirection: 'row', gap: 40 },
+  summaryLabel: { color: colors.muted, fontSize: 12, fontWeight: '700' },
+  summaryValue: { color: colors.text, fontSize: 21, fontWeight: '900', marginTop: 4 },
+  divider: { height: 1, backgroundColor: colors.border },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  sectionTitle: { fontSize: 22, lineHeight: 26, fontWeight: '900', color: colors.text, letterSpacing: -0.5 },
+  stepRow: { minHeight: 50, borderBottomWidth: 1, borderBottomColor: colors.border, flexDirection: 'row', alignItems: 'center', gap: 16 },
+  stepNo: { width: 30, color: colors.primary, fontSize: 12, fontWeight: '900' },
+  stepText: { flex: 1, color: colors.text, fontSize: 15, fontWeight: '700' },
+  pointsLink: { minHeight: 76, paddingVertical: 14, borderTopWidth: 1, borderBottomWidth: 1, borderColor: colors.border, flexDirection: 'row', alignItems: 'center' },
+  pointsTitle: { color: colors.text, fontSize: 17, fontWeight: '900' },
+  pointsMeta: { color: colors.muted, fontSize: 12, marginTop: 4 },
+  arrow: { marginLeft: 'auto', color: colors.text, fontSize: 32, lineHeight: 32, fontWeight: '300' },
+  refundRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingTop: 14 },
   itemTitle: { fontWeight: '900', color: colors.text, fontSize: 15 },
   itemMeta: { color: colors.muted, marginTop: 4, fontSize: 12 },
   amount: { fontWeight: '900', color: colors.primaryDark, fontSize: 18 }
